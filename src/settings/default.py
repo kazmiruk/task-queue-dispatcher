@@ -21,7 +21,7 @@ GEARMAN = {
 GEARMAN_RETRY = 5
 WAIT_DB_RESPONSE = 2
 
-DEBUG = True
+DEBUG = False
 
 import logging
 
