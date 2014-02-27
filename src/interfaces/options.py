@@ -5,7 +5,7 @@ def _get_options():
     parser = OptionParser()
     parser.add_option("-p", "--processor", dest="processor",
                       help="class processor for demon", metavar="CLASS")
-    parser.add_option("-q", "--queue_name", dest="queue_name",
+    parser.add_option("-q", "--queue-name", dest="queue_name",
                       help="queue name for current instance")
     parser.add_option("-c", "--chunk", dest="chunk",
                       help="chunk of selected queue[default = 1]", default=1)
