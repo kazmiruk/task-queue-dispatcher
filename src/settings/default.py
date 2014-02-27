@@ -26,6 +26,6 @@ DEBUG = False
 import logging
 
 LOGGING = {
-    'format': u'%(filename)s[LINE:%(lineno)d]# %(levelname)-8s [%(asctime)s]  %(message)s',
+    'format': u'%(asctime)-15s: %(levelname)s: %(filename)s:%(lineno)d: %(message)s',
     'level': logging.DEBUG
 }
