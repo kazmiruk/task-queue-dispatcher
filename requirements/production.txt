@@ -4,7 +4,7 @@ gevent==1.0
 
 psycopg2==2.5.1
 
-git+https://github.com/fvbock/gDBPool
+git+https://github.com/kazmiruk/gDBPool
 
 gearman==2.0.2
 
