@@ -39,7 +39,7 @@ class Proxy(object):
         obj = SEND_QUEUE.get()
 
         while not self._client.is_available(obj['persistent']):
-            logging.error("Gearman not available for {persistent}".format(
+            logging.error("Gearman not available for persistent = {persistent}".format(
                 persistent=obj['persistent']
             ))
 

@@ -58,15 +58,13 @@ class Client(object):
 
         while True:
             try:
-                response = client.submit_job(
+                return Client.is_response_accepted(client.submit_job(
                     task_type,
                     dumps(object_info),
                     background=True,
                     wait_until_complete=True,
                     poll_timeout=waiting_timeout
-                )
-
-                return not (response.state == 'PENDING' and response.timed_out)
+                ))
             except gearman.errors.GearmanError, e:
                 logging.error("Gearman raised an exception: {msg}".format(
                     msg=e.message
@@ -76,6 +74,12 @@ class Client(object):
 
         return False
 
+    @classmethod
+    def is_response_accepted(cls, response):
+        return not (response.timed_out and response.state in (
+            gearman.JOB_FAILED, gearman.JOB_PENDING, gearman.constants.JOB_UNKNOWN
+        ))
+
     def _update_gearman_connection(self):
         logging.warning("Gearman client tries to reconnect after {sec} sec".format(
             sec=settings.GEARMAN_RECONNECT_TIMEOUT
@@ -83,7 +87,6 @@ class Client(object):
 
         sleep(settings.GEARMAN_RECONNECT_TIMEOUT)
         self.reset()
-
 
     def is_available(self, persistent=True):
         """ Ping all of the hosts, that defined in the settings,
