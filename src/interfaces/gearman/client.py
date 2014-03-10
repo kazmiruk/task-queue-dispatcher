@@ -2,6 +2,7 @@ import gearman
 import settings
 from json import dumps
 import logging
+from gevent import sleep
 
 
 class Client(object):
@@ -34,7 +35,7 @@ class Client(object):
                 )
 
             client = self.persistent_client
-            reconnect_timeout = settings.GEARMAN['PERSISTENT']['reconnect_timeout']
+            waiting_timeout = settings.GEARMAN['PERSISTENT']['waiting_timeout']
         else:
             if not self.volatile_client:
                 self.volatile_client = gearman.GearmanClient(
@@ -42,26 +43,47 @@ class Client(object):
                 )
 
             client = self.volatile_client
-            reconnect_timeout = settings.GEARMAN['VOLATILE']['reconnect_timeout']
+            waiting_timeout = settings.GEARMAN['VOLATILE']['waiting_timeout']
 
-        return client, reconnect_timeout
+        return client, waiting_timeout
 
     def send(self, object_info, task_type, persistent=False):
         """ sends object into task_type queue
         """
-        client, reconnect_timeout = self._get_client(persistent)
+        client, waiting_timeout = self._get_client(persistent)
 
         logging.debug("{task_type} was sent to gearman".format(
             task_type=task_type
         ))
 
-        return client.submit_job(
-            task_type,
-            dumps(object_info),
-            background=True,
-            wait_until_complete=True,
-            poll_timeout=reconnect_timeout
-        )
+        while True:
+            try:
+                response = client.submit_job(
+                    task_type,
+                    dumps(object_info),
+                    background=True,
+                    wait_until_complete=True,
+                    poll_timeout=waiting_timeout
+                )
+
+                return not (response.state == 'PENDING' and response.timed_out)
+            except gearman.errors.GearmanError, e:
+                logging.error("Gearman raised an exception: {msg}".format(
+                    msg=e.message
+                ))
+
+                self._update_gearman_connection()
+
+        return False
+
+    def _update_gearman_connection(self):
+        logging.warning("Gearman client tries to reconnect after {sec} sec".format(
+            sec=settings.GEARMAN_RECONNECT_TIMEOUT
+        ))
+
+        sleep(settings.GEARMAN_RECONNECT_TIMEOUT)
+        self.reset()
+
 
     def is_available(self, persistent=True):
         """ Ping all of the hosts, that defined in the settings,

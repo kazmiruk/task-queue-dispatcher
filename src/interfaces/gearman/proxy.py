@@ -34,7 +34,7 @@ class Proxy(object):
     def _sender_loop(self):
         """ sender loop method get task from queue and try
         to send it into gearman. If it fails then task goes
-        to the error queue and wait there GEARMAN_RETRY
+        to the error queue and wait there GEARMAN_RETRY_TIMEOUT
         """
         obj = SEND_QUEUE.get()
 
@@ -43,7 +43,7 @@ class Proxy(object):
                 persistent=obj['persistent']
             ))
 
-            sleep(settings.GEARMAN_RETRY)
+            sleep(settings.GEARMAN_RETRY_TIMEOUT)
 
         gearman_send_status = self._client.send(
             obj['data'],
@@ -71,13 +71,16 @@ class Proxy(object):
         obj = ERROR_QUEUE.get()
         JobWrapper.spawn(self._error_delay, obj)
 
+        return True
+
     def _error_delay(self, obj):
-        """ method sleeps GEARMAN_RETRY time and then
+        """ method sleeps GEARMAN_RETRY_TIMEOUT time and then
         send task into queue to retry send it
         """
         logging.debug("Task {id} will be sleep {second} seconds".format(
             id=obj['id'],
-            second=settings.GEARMAN_RETRY
+            second=settings.GEARMAN_RETRY_TIMEOUT
         ))
-        sleep(settings.GEARMAN_RETRY)
+
+        sleep(settings.GEARMAN_RETRY_TIMEOUT)
         SEND_QUEUE.put(obj)
