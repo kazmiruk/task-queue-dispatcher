@@ -9,3 +9,5 @@ git+https://github.com/kazmiruk/gDBPool
 gearman==2.0.2
 
 python-dateutil==2.2
+
+raven==3.5.2
