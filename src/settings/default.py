@@ -42,7 +42,7 @@ LOGGING = {
         'sentry': {
             'level': 'ERROR',
             'class': 'raven.handlers.logging.SentryHandler',
-            'dsn': 'udp://c01073c86dd84fe28eccc363374245d6:d0630bf10200461f92bf75f7995a89a2@sentry.dev.pearbox.net:9001/6'
+            'dsn': 'http://c01073c86dd84fe28eccc363374245d6:d0630bf10200461f92bf75f7995a89a2@sentry.dev.pearbox.net/6'
         }
     },
     'loggers': {
