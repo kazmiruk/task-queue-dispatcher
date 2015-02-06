@@ -10,4 +10,4 @@ gearman==2.0.2
 
 python-dateutil==2.2
 
-raven==5.0.0
+raven==5.1.1
