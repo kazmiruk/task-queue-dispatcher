@@ -11,7 +11,7 @@ pip install -r requirements/production.txt
 
 Server could be run by
 
-python process.py <options> command
+python process.py < options >
 
 # Options
 
