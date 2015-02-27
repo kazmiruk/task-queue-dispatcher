@@ -30,17 +30,13 @@ class Client(object):
         """
         if persistent:
             if not self.persistent_client:
-                self.persistent_client = gearman.GearmanClient(
-                    settings.GEARMAN['PERSISTENT']['hosts']
-                )
+                self.persistent_client = gearman.GearmanClient(settings.GEARMAN['PERSISTENT']['hosts'])
 
             client = self.persistent_client
             waiting_timeout = settings.GEARMAN['PERSISTENT']['waiting_timeout']
         else:
             if not self.volatile_client:
-                self.volatile_client = gearman.GearmanClient(
-                    settings.GEARMAN['VOLATILE']['hosts']
-                )
+                self.volatile_client = gearman.GearmanClient(settings.GEARMAN['VOLATILE']['hosts'])
 
             client = self.volatile_client
             waiting_timeout = settings.GEARMAN['VOLATILE']['waiting_timeout']
@@ -52,23 +48,15 @@ class Client(object):
         """
         client, waiting_timeout = self._get_client(persistent)
 
-        logging.debug("{task_type} was sent to gearman".format(
-            task_type=task_type
-        ))
+        logging.debug("{task_type} was sent to gearman".format(task_type=task_type))
 
         while True:
             try:
                 return Client.is_response_accepted(client.submit_job(
-                    task_type,
-                    dumps(object_info),
-                    background=True,
-                    wait_until_complete=True,
-                    poll_timeout=waiting_timeout
-                ))
+                    task_type, dumps(object_info), background=True,
+                    wait_until_complete=True, poll_timeout=waiting_timeout))
             except gearman.errors.GearmanError, e:
-                logging.error("Gearman raised an exception: {msg}".format(
-                    msg=e.message
-                ))
+                logging.error("Gearman raised an exception: {msg}".format(msg=e.message))
 
                 self._update_gearman_connection()
 
@@ -76,14 +64,12 @@ class Client(object):
 
     @classmethod
     def is_response_accepted(cls, response):
-        return not (response.timed_out and response.state in (
-            gearman.JOB_FAILED, gearman.JOB_PENDING, gearman.constants.JOB_UNKNOWN
-        ))
+        return not (response.timed_out and response.state in (gearman.JOB_FAILED, gearman.JOB_PENDING,
+                                                              gearman.constants.JOB_UNKNOWN))
 
     def _update_gearman_connection(self):
         logging.warning("Gearman client tries to reconnect after {sec} sec".format(
-            sec=settings.GEARMAN_RECONNECT_TIMEOUT
-        ))
+            sec=settings.GEARMAN_RECONNECT_TIMEOUT))
 
         sleep(settings.GEARMAN_RECONNECT_TIMEOUT)
         self.reset()

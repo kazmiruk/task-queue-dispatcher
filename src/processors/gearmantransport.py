@@ -12,20 +12,13 @@ class GearmanTransport(BaseProcessor):
         and concurrency races
         """
         self._gearman_client = GearmanAdapter()
-        logging.debug("{name}: processor successfully initiated".format(
-            name=self.__class__
-        ))
+        logging.debug("{name}: processor successfully initiated".format(name=self.__class__))
 
     def callback(self, id, payload):
         """ This method just send task id and payload to
         gearman adapter queue
         """
-        self._gearman_client.send(
-            id,
-            payload
-        )
+        self._gearman_client.send(id, payload)
 
         logging.debug("{name}: task with id = {id} was sent to gearman client".format(
-            name=self.__class__,
-            id=id
-        ))
+            name=self.__class__, id=id))

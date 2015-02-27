@@ -1,4 +1,5 @@
 from default import *
 
-DATABASES['USER'] = 'postgres'
-DATABASES['PASSWORD'] = '123'
+DATABASES['USER'] = 'temaretik'
+DATABASES['PASSWORD'] = 'tema'
+DATABASES['NAME'] = 'temaretik'

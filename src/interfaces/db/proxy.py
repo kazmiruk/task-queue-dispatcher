@@ -26,14 +26,9 @@ class Proxy(object):
         """
         from client import DBConnection
 
-        self.db = DBConnection(
-            settings.DATABASES['HOST'],
-            settings.DATABASES['PORT'],
-            settings.DATABASES['NAME'],
-            settings.DATABASES['USER'],
-            settings.DATABASES['PASSWORD'],
-            settings.DATABASES['SCHEMA']
-        )
+        self.db = DBConnection(settings.DATABASES['HOST'], settings.DATABASES['PORT'],
+                               settings.DATABASES['NAME'], settings.DATABASES['USER'],
+                               settings.DATABASES['PASSWORD'], settings.DATABASES['SCHEMA'])
 
         self._local_list = {}
         self._processor = None
@@ -52,12 +47,7 @@ class Proxy(object):
                 'sked_time': row['sked_time']
             }
 
-            JobWrapper.spawn(
-                self._set_sked_time_callback,
-                row['id'],
-                row['payload'],
-                row['sked_time']
-            )
+            JobWrapper.spawn(self._set_sked_time_callback, row['id'], row['payload'], row['sked_time'])
 
     def start(self, processor):
         """ Method to start processing of demon logic
@@ -80,40 +70,29 @@ class Proxy(object):
         if id in self._local_list:
             return self._local_list[id]
         else:
-            logging.warning("Try to obtain absent row with id {id}".format(
-                id=id
-            ))
+            logging.warning("Try to obtain absent row with id {id}".format(id=id))
             return None
 
     def delete_row(self, id):
         """ deletes row from database and cache
         """
         if id not in self._local_list:
-            logging.warning("Try to delete row {id} which absent in local storage".format(
-                id=id
-            ))
+            logging.warning("Try to delete row {id} which absent in local storage".format(id=id))
 
         if self.db.delete_row(id):
             del self._local_list[id]
         else:
-            logging.error("Error in query to databese while deleteing row with id {id}".format(
-                id=id
-            ))
+            logging.error("Error in query to databese while deleteing row with id {id}".format(id=id))
 
     def _set_sked_time_callback(self, id, payload, sked_time):
         """ green threed function for waiting sked time
         """
         seconds = Proxy._sked_time2seconds(sked_time)
 
-        logging.debug("Greenlet will be sleep {second} seconds".format(
-            second=seconds
-        ))
+        logging.debug("Greenlet will be sleep {second} seconds".format(second=seconds))
         gevent.sleep(seconds)
 
-        self._processor.callback(
-            id,
-            payload
-        )
+        self._processor.callback(id, payload)
 
     @staticmethod
     def _sked_time2seconds(ds):
@@ -144,12 +123,8 @@ class Proxy(object):
             'sked_time': data['sked_time']
         }
 
-        JobWrapper.spawn(
-            self._set_sked_time_callback,
-            data['id'],
-            data['payload'],
-            data['sked_time']
-        )
+        JobWrapper.spawn(self._set_sked_time_callback, data['id'],
+                         data['payload'], data['sked_time'])
 
         return True
 
@@ -161,10 +136,7 @@ class Proxy(object):
         raw = ""
 
         for key in data:
-            raw += "{key}:{value}".format(
-                key=key,
-                value=data[key]
-            )
+            raw += "{key}:{value}".format(key=key, value=data[key])
         return json.loads(raw)
 
     def _success_listener(self):

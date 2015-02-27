@@ -20,10 +20,7 @@ class TestDBInterfaces(unittest.TestCase):
         poll_connections = 2
         ipoll = self.get_connection(poll_connections)
 
-        self.assertEqual(
-            ipoll.conn_pools['default'].qsize,
-            poll_connections
-        )
+        self.assertEqual(ipoll.conn_pools['default'].qsize, poll_connections)
 
     def test_query(self):
         poll_connections = 2

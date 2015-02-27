@@ -25,9 +25,7 @@ class Proxy(object):
         """ sending task into gearman just add it to
         the async queue
         """
-        logging.debug("Add task {id} into send queue".format(
-            id=id
-        ))
+        logging.debug("Add task {id} into send queue".format(id=id))
         payload['id'] = id
         SEND_QUEUE.put(payload)
 
@@ -40,26 +38,18 @@ class Proxy(object):
 
         while not self._client.is_available(obj['persistent']):
             logging.error("Gearman not available for persistent = {persistent}".format(
-                persistent=obj['persistent']
-            ))
+                persistent=obj['persistent']))
 
             sleep(settings.GEARMAN_RETRY_TIMEOUT)
 
-        gearman_send_status = self._client.send(
-            obj['data'],
-            str(obj['gearman_queue_name']),
-            obj['persistent']
-        )
+        gearman_send_status = self._client.send(obj['data'], str(obj['gearman_queue_name']),
+                                                obj['persistent'])
 
         if gearman_send_status:
-            logging.debug("Task {id} was successfully sent".format(
-                id=obj['id']
-            ))
+            logging.debug("Task {id} was successfully sent".format(id=obj['id']))
             SUCCESS_QUEUE.put(obj['id'])
         else:
-            logging.debug("Task {id} was returned to error queue".format(
-                id=obj['id']
-            ))
+            logging.debug("Task {id} was returned to error queue".format(id=obj['id']))
             ERROR_QUEUE.put(obj)
 
         return True
@@ -78,9 +68,7 @@ class Proxy(object):
         send task into queue to retry send it
         """
         logging.debug("Task {id} will be sleep {second} seconds".format(
-            id=obj['id'],
-            second=settings.GEARMAN_RETRY_TIMEOUT
-        ))
+            id=obj['id'], second=settings.GEARMAN_RETRY_TIMEOUT))
 
         sleep(settings.GEARMAN_RETRY_TIMEOUT)
         SEND_QUEUE.put(obj)
