@@ -36,7 +36,7 @@ class TestDBInterfaces(unittest.TestCase):
         current_time = '2014-02-02 10:00:00'
         seconds = Proxy._sked_time2seconds(current_time)
 
-        self.assertLess(seconds, 0)
+        self.assertEqual(seconds, 0)
 
     def test_parse_time_more(self):
         current_time = '2074-02-02 10:00:00'

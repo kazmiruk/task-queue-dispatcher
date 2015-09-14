@@ -17,7 +17,7 @@ class Proxy(object):
     """
     def __new__(cls):
         if not hasattr(cls, 'instance'):
-             cls.instance = super(Proxy, cls).__new__(cls)
+            cls.instance = super(Proxy, cls).__new__(cls)
         return cls.instance
 
     def __init__(self):
@@ -54,14 +54,14 @@ class Proxy(object):
         """
         self._processor = processor
 
-        #start success listener
+        # start success listener
         JobWrapper.start_listen(self._success_listener)
 
-        #then selecting current unprocessed tasks
+        # then selecting current unprocessed tasks
         self._select_current_tasks()
-        #and only after that starts to listen notifications
+        # and only after that starts to listen notifications
         self.db.listen(NOTIFY_QUEUE)
-        #and start listener to transport it to the processor
+        # and start listener to transport it to the processor
         JobWrapper.start_listen(self._task_listener)
 
     def get_row(self, id):
@@ -132,7 +132,7 @@ class Proxy(object):
         """ The GDBPool has strange bug which break object.
         This method fix it
         """
-        #TODO: try to fix it in other way
+        # TODO: try to fix it in other way
         raw = ""
 
         for key in data:

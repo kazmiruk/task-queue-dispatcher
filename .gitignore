@@ -1,1 +1,56 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# IDE
+.idea
+
+# C extensions
+*.so
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+.env/
+
+# Unit test / coverage reports
+.tox/
+.coverage
+.cache
+cover
+nosetests.xml
+coverage.xml
+
+# Translations
+*.mo
+
+# Django stuff:
+*.log
+*.pot
+
+# VIM
+*.swp
+
+# Sphinx documentation
+docs/_build/
+
+build/
+
 local.py
+
+# assets
+.webassets-cache
+src/static
+
+/static/
+
+# gzip of static
+*.gz
+
+.DS_Store
+.sublime-project
+.sublime-workspace
+.sublime-project.sublime-workspace
+
+*.sublime-project
+*.sublime-workspace

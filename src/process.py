@@ -28,7 +28,7 @@ try:
     processor_cls = getattr(module, OPTIONS.processor)
 
     start_demon(processor_cls)
-    #all spawned jobs before this string are joined in one waiter
+    # all spawned jobs before this string are joined in one waiter
     JobWrapper.join_all()
 except KeyboardInterrupt, e:
     logging.debug("Demon shutdown")

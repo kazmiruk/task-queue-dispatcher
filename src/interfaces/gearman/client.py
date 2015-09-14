@@ -88,7 +88,7 @@ class Client(object):
                 client = gearman.admin_client.GearmanAdminClient([host, ])
                 client.ping_server()
                 return True
-            except gearman.errors.ServerUnavailable:
+            except (gearman.errors.ServerUnavailable, gearman.errors.InvalidAdminClientState):
                 # try next gearman host
                 pass
 
